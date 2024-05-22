@@ -3,17 +3,18 @@ from collections import UserDict
 class Field:
     def __init__(self, value):
         self.value = value
+        self.validate()
 
     def __str__(self):
         return str(self.value)
 
 class Name(Field):
-    def standart_phones(self):
+    def validate(self):
         if not isinstance(self.value, str):
             raise ValueError("Name must be a string")
 
 class Phone(Field):
-    def standart_phones(self):
+    def validate(self):
         if not isinstance(self.value, str):
             raise ValueError("Phone number must be a string")
         if not self.value.isdigit():
@@ -28,7 +29,6 @@ class Record:
 
     def add_phone(self, phone):
         phone_obj = Phone(phone)
-        phone_obj.standart_phones()
         self.phones.append(phone_obj)
 
     def remove_phone(self, phone):
@@ -38,8 +38,13 @@ class Record:
         self.remove_phone(old_phone)
         self.add_phone(new_phone)
 
+    
     def find_phone(self, phone):
-        return phone in [str(p) for p in self.phones]
+        for p in self.phones:
+            if str(p) == phone:
+                return p
+        return None
+
 
     def __str__(self):
         return f"Contact name: {self.name.value}, phones: {'; '.join(str(p) for p in self.phones)}"
